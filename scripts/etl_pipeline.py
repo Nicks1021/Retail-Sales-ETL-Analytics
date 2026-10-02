@@ -187,21 +187,23 @@ orders.to_csv(
 
 print("Data transformation completed.")
 
+import os
+from dotenv import load_dotenv
 
-# -----------------------------
+load_dotenv()
+
 # 11. POSTGRESQL CONNECTION
 # -----------------------------
 
-connection = psycopg2.connect(
+conn = psycopg2.connect(
     host="localhost",
     database="retail_etl_db",
     user="postgres",
-    password="REMOVED_PASSWORD",
+    password=os.getenv("POSTGRES_PASSWORD"),
     port="5432"
 )
 
-cursor = connection.cursor()
-
+cursor = conn.cursor()
 
 # -----------------------------
 # 12. LOAD CUSTOMERS
@@ -283,15 +285,13 @@ for _, row in orders.iterrows():
         )
     )
 
-
 # -----------------------------
 # 15. COMMIT
 # -----------------------------
 
-connection.commit()
+conn.commit()
 
 cursor.close()
-connection.close()
-
+conn.close()
 print("Data loaded successfully into PostgreSQL.")
 print("ETL Pipeline completed successfully!")
